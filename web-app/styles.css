@@ -209,23 +209,6 @@ button:disabled {
   background: #f1f6fc;
 }
 
-.hint {
-  margin: 0.62rem 0 0.4rem 0;
-  color: #42536f;
-  font-size: 0.89rem;
-}
-
-.preview-pill {
-  display: inline-block;
-  margin: 0;
-  padding: 0.32rem 0.6rem;
-  border: 1px solid #c8d9ef;
-  border-radius: 999px;
-  background: var(--primary-soft);
-  color: #214973;
-  font-size: 0.86rem;
-}
-
 .inline-check {
   display: inline-flex;
   align-items: center;

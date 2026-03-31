@@ -12,13 +12,10 @@ const textMap = {
   formatJpg: "JPG\uff08\u8f03\u7d30\uff09",
   formatWebp: "WEBP\uff08\u58d3\u7e2e\uff09",
   perSecondLabel: "\u6bcf\u79d2\u8f38\u51fa\u5e7e\u5f35",
-  perSecondHint: "\u4f8b\u5b50\uff1a1 = \u6bcf\u79d2 1 \u5f35\uff0c10 = \u6bcf\u79d2 10 \u5f35",
-  perSecondPreviewPrefix: "\u76ee\u524d\u8a2d\u5b9a\uff1a\u6bcf\u79d2 ",
-  perSecondPreviewSuffix: " \u5f35",
-  perSecondPreviewAllFrames: "\u76ee\u524d\u8a2d\u5b9a\uff1a\u6bcf\u4e00\u5075\u90fd\u8f38\u51fa\uff08\u6700\u591a\uff09",
   allFramesLabel: "\u6bcf\u4e00\u5075\u90fd\u8f38\u51fa\uff08\u5ffd\u7565\u300c\u6bcf\u79d2\u5e7e\u5f35\u300d\uff09",
   outputModeTitle: "\u8f38\u51fa\u65b9\u5f0f",
   zipModeLabel: "\u4e0b\u8f09 ZIP\uff08\u6240\u6709\u700f\u89bd\u5668\u53ef\u7528\uff09",
+  saveAsModeLabel: "Edge / Chrome \u53e6\u5b58 ZIP\uff08\u53ef\u9078\u4f4d\u7f6e\uff09",
   folderModeLabel: "\u76f4\u63a5\u5beb\u5165\u8cc7\u6599\u593e\uff08Chrome / Edge\uff09",
   chooseFolderBtn: "\u9078\u64c7\u8f38\u51fa\u8cc7\u6599\u593e",
   folderNotPicked: "\u5c1a\u672a\u9078\u64c7\u8cc7\u6599\u593e",
@@ -34,6 +31,10 @@ const textMap = {
   clearedLog: "\u5df2\u6e05\u7a7a\u7d00\u9304\u3002",
   folderModeUnsupported:
     "\u4f60\u7684\u700f\u89bd\u5668\u4e0d\u652f\u63f4\u9078\u8cc7\u6599\u593e\u5beb\u5165\uff0c\u8acb\u6539\u7528 Chrome \u6216 Edge\uff0c\u6216\u9078 ZIP \u4e0b\u8f09\u3002",
+  saveAsModeUnsupported:
+    "\u4f60\u7684\u700f\u89bd\u5668\u4e0d\u652f\u63f4\u300c\u53e6\u5b58\u70ba\u300d\u529f\u80fd\uff0c\u8acb\u6539\u7528 Edge / Chrome\uff0c\u6216\u9078 ZIP \u4e0b\u8f09\u3002",
+  saveAsDone: "\u5df2\u5132\u5b58 ZIP\uff1a",
+  saveAsCanceled: "\u4f60\u53d6\u6d88\u4e86\u53e6\u5b58\u3002\u4ecd\u53ef\u6309\u300c\u4e0b\u8f09\u7d50\u679c\u300d\u3002",
   chooseFolderFirst: "\u8acb\u5148\u9078\u64c7\u8f38\u51fa\u8cc7\u6599\u593e\u3002",
   chooseVideoFirst: "\u8acb\u5148\u9078\u64c7\u5f71\u7247\u3002",
   loadingLibFail: "\u8f09\u5165 ffmpeg.wasm \u5931\u6557\uff0c\u8acb\u6aa2\u67e5\u7db2\u8def\u5f8c\u518d\u8a66\u3002",
@@ -72,11 +73,10 @@ const el = {
   optionJpg: byId("optionJpg"),
   optionWebp: byId("optionWebp"),
   perSecondLabel: byId("perSecondLabel"),
-  perSecondHint: byId("perSecondHint"),
-  perSecondPreview: byId("perSecondPreview"),
   allFramesLabel: byId("allFramesLabel"),
   outputModeTitle: byId("outputModeTitle"),
   zipModeLabel: byId("zipModeLabel"),
+  saveAsModeLabel: byId("saveAsModeLabel"),
   folderModeLabel: byId("folderModeLabel"),
   pickFolderBtn: byId("pickFolderBtn"),
   folderName: byId("folderName"),
@@ -125,10 +125,10 @@ function setStaticTexts() {
   el.optionJpg.textContent = textMap.formatJpg;
   el.optionWebp.textContent = textMap.formatWebp;
   el.perSecondLabel.textContent = textMap.perSecondLabel;
-  el.perSecondHint.textContent = textMap.perSecondHint;
   el.allFramesLabel.textContent = textMap.allFramesLabel;
   el.outputModeTitle.textContent = textMap.outputModeTitle;
   el.zipModeLabel.textContent = textMap.zipModeLabel;
+  el.saveAsModeLabel.textContent = textMap.saveAsModeLabel;
   el.folderModeLabel.textContent = textMap.folderModeLabel;
   el.pickFolderBtn.textContent = textMap.chooseFolderBtn;
   el.folderName.textContent = textMap.folderNotPicked;
@@ -165,6 +165,10 @@ function supportsFolderPicker() {
   return typeof window.showDirectoryPicker === "function";
 }
 
+function supportsSaveFilePicker() {
+  return typeof window.showSaveFilePicker === "function";
+}
+
 function getOutputMode() {
   const checked = document.querySelector('input[name="outputMode"]:checked');
   return checked ? checked.value : "zip";
@@ -179,16 +183,6 @@ function getPerSecondValue() {
   return clampPerSecond(Number(el.perSecondInput.value));
 }
 
-function updateRatePreview() {
-  if (el.allFramesCheck.checked) {
-    el.perSecondPreview.textContent = textMap.perSecondPreviewAllFrames;
-    return;
-  }
-
-  const perSecond = getPerSecondValue();
-  el.perSecondPreview.textContent = `${textMap.perSecondPreviewPrefix}${perSecond}${textMap.perSecondPreviewSuffix}`;
-}
-
 function syncPerSecondControls(nextValue) {
   const safe = clampPerSecond(Number(nextValue));
   const safeText = String(safe);
@@ -199,8 +193,6 @@ function syncPerSecondControls(nextValue) {
   if (el.perSecondSlider.value !== safeText) {
     el.perSecondSlider.value = safeText;
   }
-
-  updateRatePreview();
 }
 
 function updateRateInputEnabled() {
@@ -211,8 +203,6 @@ function updateRateInputEnabled() {
   for (const btn of el.presetButtons) {
     btn.disabled = disabled;
   }
-
-  updateRatePreview();
 }
 
 function setBusy(busy) {
@@ -326,7 +316,7 @@ async function collectFrameFiles(formatExt) {
   return files;
 }
 
-async function saveToZip(frameFiles, zipName) {
+async function saveToZip(frameFiles, zipName, showReadyLog = true) {
   const { default: JSZip } = await import("https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm");
   const zip = new JSZip();
 
@@ -338,7 +328,38 @@ async function saveToZip(frameFiles, zipName) {
   state.zipBlob = await zip.generateAsync({ type: "blob" });
   state.zipName = zipName;
   el.downloadBtn.disabled = false;
-  log(textMap.zipReady);
+  if (showReadyLog) {
+    log(textMap.zipReady);
+  }
+}
+
+async function saveZipToPickedFile(zipBlob, zipName) {
+  if (!supportsSaveFilePicker()) {
+    throw new Error(textMap.saveAsModeUnsupported);
+  }
+
+  try {
+    const handle = await window.showSaveFilePicker({
+      suggestedName: zipName,
+      types: [
+        {
+          description: "ZIP",
+          accept: { "application/zip": [".zip"] },
+        },
+      ],
+    });
+    const writable = await handle.createWritable();
+    await writable.write(zipBlob);
+    await writable.close();
+    log(`${textMap.saveAsDone} ${zipName}`);
+    return true;
+  } catch (err) {
+    if (err && err.name === "AbortError") {
+      log(textMap.saveAsCanceled);
+      return false;
+    }
+    throw err;
+  }
 }
 
 async function getUniqueSubFolder(parent, baseName) {
@@ -387,6 +408,10 @@ async function convertVideo() {
     alert(textMap.chooseFolderFirst);
     return;
   }
+  if (state.outputMode === "saveas" && !supportsSaveFilePicker()) {
+    alert(textMap.saveAsModeUnsupported);
+    return;
+  }
 
   setBusy(true);
   setProgress(0);
@@ -431,7 +456,15 @@ async function convertVideo() {
     if (state.outputMode === "folder") {
       await saveToFolder(frameFiles, `${baseName}_frames`);
     } else {
-      await saveToZip(frameFiles, `${baseName}_frames.zip`);
+      const zipName = `${baseName}_frames.zip`;
+      const isSaveAsMode = state.outputMode === "saveas";
+      await saveToZip(frameFiles, zipName, !isSaveAsMode);
+      if (state.outputMode === "saveas") {
+        const saved = await saveZipToPickedFile(state.zipBlob, zipName);
+        if (!saved) {
+          log(textMap.zipReady);
+        }
+      }
     }
 
     setProgress(100);
@@ -514,6 +547,11 @@ function bindEvents() {
       state.outputMode = getOutputMode();
       if (state.outputMode === "folder" && !supportsFolderPicker()) {
         alert(textMap.folderModeUnsupported);
+        document.querySelector('input[name="outputMode"][value="zip"]').checked = true;
+        state.outputMode = "zip";
+      }
+      if (state.outputMode === "saveas" && !supportsSaveFilePicker()) {
+        alert(textMap.saveAsModeUnsupported);
         document.querySelector('input[name="outputMode"][value="zip"]').checked = true;
         state.outputMode = "zip";
       }

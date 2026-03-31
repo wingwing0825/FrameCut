@@ -34,6 +34,7 @@ http://127.0.0.1:5173
 4. Output format: PNG/JPG/WEBP
 5. Output modes:
    - Download ZIP (all browsers)
+   - Save ZIP to chosen location (Chrome/Edge)
    - Write directly to folder (Chrome/Edge only)
 
 ### Notes

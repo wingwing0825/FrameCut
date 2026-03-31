@@ -58,9 +58,6 @@
         </div>
       </div>
 
-      <p id="perSecondHint" class="hint">1 = 1 image/sec, 10 = 10 images/sec</p>
-      <p id="perSecondPreview" class="preview-pill">Current: 1 image/sec</p>
-
       <label class="inline-check">
         <input id="allFramesCheck" type="checkbox" />
         <span id="allFramesLabel">Export every frame</span>
@@ -72,6 +69,11 @@
         <label class="mode-item mode-item-strong">
           <input type="radio" name="outputMode" value="zip" checked />
           <span id="zipModeLabel">Download ZIP</span>
+        </label>
+
+        <label class="mode-item mode-item-strong">
+          <input type="radio" name="outputMode" value="saveas" />
+          <span id="saveAsModeLabel">Save ZIP as... (Chrome / Edge)</span>
         </label>
 
         <label class="mode-item mode-item-strong">
