@@ -2,7 +2,7 @@
 ffmpeg.exe
 ffplay.exe
 ffprobe.exe
-ffmpeg/
+/ffmpeg/
 
 # Generated frame outputs
 *_frames/
@@ -14,4 +14,3 @@ PixVerse_V6_Image_Text_720P_A_cute_kitten_sits_frames/
 Thumbs.db
 Desktop.ini
 .vscode/
-
