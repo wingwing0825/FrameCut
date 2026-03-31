@@ -29,9 +29,10 @@ http://127.0.0.1:5173
 ### Features
 
 1. Upload or drag video
-2. Extract every frame or every Nth frame
-3. Output format: PNG/JPG/WEBP
-4. Output modes:
+2. Set output as "images per second" (for example 1 image/sec, 10 images/sec)
+3. Optional: export every frame
+4. Output format: PNG/JPG/WEBP
+5. Output modes:
    - Download ZIP (all browsers)
    - Write directly to folder (Chrome/Edge only)
 
