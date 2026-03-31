@@ -37,8 +37,8 @@ http://127.0.0.1:5173
 
 ### Notes
 
-1. First run downloads `ffmpeg.wasm` from CDN (internet required)
-2. Web app does not need local `ffmpeg.exe`
+1. Web app does not need local `ffmpeg.exe`
+2. ffmpeg browser runtime files are bundled in `web-app/vendor`
 3. Large videos use significant memory in browser
 
 ## Deploy to Vercel

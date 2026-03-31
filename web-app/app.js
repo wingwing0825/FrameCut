@@ -57,7 +57,6 @@ const el = {
 
 const state = {
   ffmpeg: null,
-  fetchFile: null,
   ffmpegReady: false,
   outputMode: "zip",
   directoryHandle: null,
@@ -147,10 +146,7 @@ async function ensureFFmpeg() {
   log(textMap.statusInit);
 
   try {
-    const [{ FFmpeg }, { fetchFile, toBlobURL }] = await Promise.all([
-      import("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/esm/index.js"),
-      import("https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.2/dist/esm/index.js"),
-    ]);
+    const { FFmpeg } = await import("./vendor/ffmpeg/index.js");
 
     const ffmpeg = new FFmpeg();
     ffmpeg.on("log", ({ message }) => {
@@ -162,14 +158,13 @@ async function ensureFFmpeg() {
       }
     });
 
-    const coreBase = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm";
+    const coreBase = new URL("./vendor/core/", window.location.href);
     await ffmpeg.load({
-      coreURL: await toBlobURL(`${coreBase}/ffmpeg-core.js`, "text/javascript"),
-      wasmURL: await toBlobURL(`${coreBase}/ffmpeg-core.wasm`, "application/wasm"),
+      coreURL: new URL("ffmpeg-core.js", coreBase).toString(),
+      wasmURL: new URL("ffmpeg-core.wasm", coreBase).toString(),
     });
 
     state.ffmpeg = ffmpeg;
-    state.fetchFile = fetchFile;
     state.ffmpegReady = true;
     log("ffmpeg.wasm ready");
   } catch (err) {
@@ -298,7 +293,7 @@ async function convertVideo() {
     await resetFsWorkspace();
 
     const formatExt = el.formatSelect.value;
-    const inputData = await state.fetchFile(state.selectedVideo);
+    const inputData = new Uint8Array(await state.selectedVideo.arrayBuffer());
     await state.ffmpeg.writeFile("/input_video", inputData);
 
     const args = ["-hide_banner", "-stats", "-y", "-i", "/input_video"];
