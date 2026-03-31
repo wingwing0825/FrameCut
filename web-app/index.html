@@ -72,14 +72,21 @@
         </label>
 
         <label class="mode-item mode-item-strong">
-          <input type="radio" name="outputMode" value="saveas" />
-          <span id="saveAsModeLabel">Save ZIP as... (Chrome / Edge)</span>
+          <input type="radio" name="outputMode" value="eagle" />
+          <span id="eagleModeLabel">Import to Eagle App</span>
         </label>
 
         <label class="mode-item mode-item-strong">
           <input type="radio" name="outputMode" value="folder" />
           <span id="folderModeLabel">Write to folder (Chrome / Edge)</span>
         </label>
+
+        <div id="eaglePanel" class="folder-row" style="display: none;">
+          <button id="loadEagleFoldersBtn" type="button">Load Eagle folders</button>
+          <select id="eagleFolderSelect">
+            <option value="">Root (No folder)</option>
+          </select>
+        </div>
 
         <div class="folder-row">
           <button id="pickFolderBtn" type="button" disabled>Choose output folder</button>
