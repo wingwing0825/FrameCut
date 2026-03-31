@@ -34,7 +34,7 @@ http://127.0.0.1:5173
 4. Output format: PNG/JPG/WEBP
 5. Output modes:
    - Download ZIP (all browsers)
-   - Import to Eagle App (when Eagle desktop app is running)
+   - Import to Eagle App (Eagle desktop must be running, and this mode only works on local app URL `http://127.0.0.1:5173`)
    - Write directly to folder (Chrome/Edge only)
 
 ### Notes
