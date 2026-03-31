@@ -56,3 +56,16 @@ This repo already includes:
 4. Build command: empty
 5. Output directory: empty
 6. Deploy
+
+## Deploy to Cloudflare Workers
+
+This repo includes:
+
+1. `wrangler.jsonc` (assets directory = `web-app`)
+2. `web-app/_headers` (COOP/COEP for ffmpeg.wasm)
+
+Cloudflare dashboard fields:
+
+1. Project name: `FrameCut` (or any unique name)
+2. Build command: leave empty
+3. Deploy command: `npx wrangler deploy`
