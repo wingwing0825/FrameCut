@@ -1,46 +1,54 @@
 const textMap = {
-  appTitle: "影片影格轉圖片",
-  appSubtitle: "適用於 Live2D 動作參考",
-  step1: "步驟 1：選擇影片",
-  step2: "步驟 2：輸出設定",
-  step3: "步驟 3：開始轉換",
-  chooseVideo: "把影片拖曳到這裡，或點擊選擇影片",
-  noVideo: "尚未選擇影片",
-  formatLabel: "圖片格式",
-  perSecondLabel: "每秒輸出幾張",
-  perSecondHint: "例子：1 = 每秒 1 張，10 = 每秒 10 張",
-  perSecondPreviewPrefix: "目前設定：每秒 ",
-  perSecondPreviewSuffix: " 張",
-  perSecondPreviewAllFrames: "目前設定：每一偵都輸出（最多）",
-  allFramesLabel: "每一偵都輸出（忽略「每秒幾張」）",
-  outputModeTitle: "輸出方式",
-  zipModeLabel: "下載 ZIP（所有瀏覽器可用）",
-  folderModeLabel: "直接寫入資料夾（Chrome / Edge）",
-  chooseFolderBtn: "選擇輸出資料夾",
-  folderNotPicked: "尚未選擇資料夾",
-  folderPickedPrefix: "已選擇資料夾：",
-  statusReady: "就緒",
-  statusInit: "載入 ffmpeg.wasm 中...",
-  statusConverting: "轉換中，請稍候...",
-  statusDone: "完成",
-  statusError: "發生錯誤",
-  convertStart: "開始轉換",
-  downloadResult: "下載結果",
-  clearLog: "清空紀錄",
-  clearedLog: "已清空紀錄。",
+  appTitle: "\u5f71\u7247\u5f71\u683c\u8f49\u5716\u7247",
+  appSubtitle: "\u9069\u7528\u65bc Live2D \u52d5\u4f5c\u53c3\u8003",
+  step1: "\u6b65\u9a5f 1\uff1a\u9078\u64c7\u5f71\u7247",
+  step2: "\u6b65\u9a5f 2\uff1a\u8f38\u51fa\u8a2d\u5b9a",
+  step3: "\u6b65\u9a5f 3\uff1a\u958b\u59cb\u8f49\u63db",
+  chooseVideoBtn: "\u9078\u64c7\u5f71\u7247",
+  chooseVideo: "\u628a\u5f71\u7247\u62d6\u66f3\u5230\u9019\u88e1\uff0c\u6216\u9ede\u64ca\u9078\u64c7\u5f71\u7247",
+  noVideo: "\u5c1a\u672a\u9078\u64c7\u5f71\u7247",
+  formatLabel: "\u5716\u7247\u683c\u5f0f",
+  formatPng: "PNG\uff08\u7121\u5931\u771f\uff09",
+  formatJpg: "JPG\uff08\u8f03\u7d30\uff09",
+  formatWebp: "WEBP\uff08\u58d3\u7e2e\uff09",
+  perSecondLabel: "\u6bcf\u79d2\u8f38\u51fa\u5e7e\u5f35",
+  perSecondHint: "\u4f8b\u5b50\uff1a1 = \u6bcf\u79d2 1 \u5f35\uff0c10 = \u6bcf\u79d2 10 \u5f35",
+  perSecondPreviewPrefix: "\u76ee\u524d\u8a2d\u5b9a\uff1a\u6bcf\u79d2 ",
+  perSecondPreviewSuffix: " \u5f35",
+  perSecondPreviewAllFrames: "\u76ee\u524d\u8a2d\u5b9a\uff1a\u6bcf\u4e00\u5075\u90fd\u8f38\u51fa\uff08\u6700\u591a\uff09",
+  allFramesLabel: "\u6bcf\u4e00\u5075\u90fd\u8f38\u51fa\uff08\u5ffd\u7565\u300c\u6bcf\u79d2\u5e7e\u5f35\u300d\uff09",
+  outputModeTitle: "\u8f38\u51fa\u65b9\u5f0f",
+  zipModeLabel: "\u4e0b\u8f09 ZIP\uff08\u6240\u6709\u700f\u89bd\u5668\u53ef\u7528\uff09",
+  folderModeLabel: "\u76f4\u63a5\u5beb\u5165\u8cc7\u6599\u593e\uff08Chrome / Edge\uff09",
+  chooseFolderBtn: "\u9078\u64c7\u8f38\u51fa\u8cc7\u6599\u593e",
+  folderNotPicked: "\u5c1a\u672a\u9078\u64c7\u8cc7\u6599\u593e",
+  folderPickedPrefix: "\u5df2\u9078\u64c7\u8cc7\u6599\u593e\uff1a",
+  statusReady: "\u5c31\u7dd2",
+  statusInit: "\u8f09\u5165 ffmpeg.wasm \u4e2d...",
+  statusConverting: "\u8f49\u63db\u4e2d\uff0c\u8acb\u7a0d\u5019...",
+  statusDone: "\u5b8c\u6210",
+  statusError: "\u767c\u751f\u932f\u8aa4",
+  convertStart: "\u958b\u59cb\u8f49\u63db",
+  downloadResult: "\u4e0b\u8f09\u7d50\u679c",
+  clearLog: "\u6e05\u7a7a\u7d00\u9304",
+  clearedLog: "\u5df2\u6e05\u7a7a\u7d00\u9304\u3002",
   folderModeUnsupported:
-    "你的瀏覽器不支援選資料夾寫入，請改用 Chrome 或 Edge，或選 ZIP 下載。",
-  chooseFolderFirst: "請先選擇輸出資料夾。",
-  chooseVideoFirst: "請先選擇影片。",
-  loadingLibFail: "載入 ffmpeg.wasm 失敗，請檢查網路後再試。",
-  preparing: "正在準備轉換...",
-  extractionDonePrefix: "轉換完成，總共輸出 ",
-  extractionDoneSuffix: " 張圖片。",
-  zipReady: "ZIP 已準備好，請點「下載結果」。",
-  folderWriteDone: "已寫入輸出資料夾：",
-  modeAllFramesLog: "輸出模式：每一偵都輸出",
-  modePerSecondPrefix: "輸出模式：每秒 ",
-  modePerSecondSuffix: " 張",
+    "\u4f60\u7684\u700f\u89bd\u5668\u4e0d\u652f\u63f4\u9078\u8cc7\u6599\u593e\u5beb\u5165\uff0c\u8acb\u6539\u7528 Chrome \u6216 Edge\uff0c\u6216\u9078 ZIP \u4e0b\u8f09\u3002",
+  chooseFolderFirst: "\u8acb\u5148\u9078\u64c7\u8f38\u51fa\u8cc7\u6599\u593e\u3002",
+  chooseVideoFirst: "\u8acb\u5148\u9078\u64c7\u5f71\u7247\u3002",
+  loadingLibFail: "\u8f09\u5165 ffmpeg.wasm \u5931\u6557\uff0c\u8acb\u6aa2\u67e5\u7db2\u8def\u5f8c\u518d\u8a66\u3002",
+  preparing: "\u6b63\u5728\u6e96\u5099\u8f49\u63db...",
+  extractionDonePrefix: "\u8f49\u63db\u5b8c\u6210\uff0c\u7e3d\u5171\u8f38\u51fa ",
+  extractionDoneSuffix: " \u5f35\u5716\u7247\u3002",
+  zipReady: "ZIP \u5df2\u6e96\u5099\u597d\uff0c\u8acb\u9ede\u300c\u4e0b\u8f09\u7d50\u679c\u300d\u3002",
+  folderWriteDone: "\u5df2\u5beb\u5165\u8f38\u51fa\u8cc7\u6599\u593e\uff1a",
+  modeAllFramesLog: "\u8f38\u51fa\u6a21\u5f0f\uff1a\u6bcf\u4e00\u5075\u90fd\u8f38\u51fa",
+  modePerSecondPrefix: "\u8f38\u51fa\u6a21\u5f0f\uff1a\u6bcf\u79d2 ",
+  modePerSecondSuffix: " \u5f35",
+  preset1: "1 \u5f35/\u79d2",
+  preset5: "5 \u5f35/\u79d2",
+  preset10: "10 \u5f35/\u79d2",
+  preset24: "24 \u5f35/\u79d2",
   logPrefix: "[LOG] ",
   errorPrefix: "[ERROR] ",
 };
@@ -56,9 +64,13 @@ const el = {
   step1Title: byId("step1Title"),
   step2Title: byId("step2Title"),
   step3Title: byId("step3Title"),
+  chooseVideoBtn: byId("chooseVideoBtn"),
   dropZoneText: byId("dropZoneText"),
   videoMeta: byId("videoMeta"),
   formatLabel: byId("formatLabel"),
+  optionPng: byId("optionPng"),
+  optionJpg: byId("optionJpg"),
+  optionWebp: byId("optionWebp"),
   perSecondLabel: byId("perSecondLabel"),
   perSecondHint: byId("perSecondHint"),
   perSecondPreview: byId("perSecondPreview"),
@@ -80,6 +92,10 @@ const el = {
   progressBar: byId("progressBar"),
   statusText: byId("statusText"),
   logBox: byId("logBox"),
+  preset1: byId("preset1"),
+  preset5: byId("preset5"),
+  preset10: byId("preset10"),
+  preset24: byId("preset24"),
   presetButtons: Array.from(document.querySelectorAll(".fps-preset")),
 };
 
@@ -101,9 +117,13 @@ function setStaticTexts() {
   el.step1Title.textContent = textMap.step1;
   el.step2Title.textContent = textMap.step2;
   el.step3Title.textContent = textMap.step3;
+  el.chooseVideoBtn.textContent = textMap.chooseVideoBtn;
   el.dropZoneText.textContent = textMap.chooseVideo;
   el.videoMeta.textContent = textMap.noVideo;
   el.formatLabel.textContent = textMap.formatLabel;
+  el.optionPng.textContent = textMap.formatPng;
+  el.optionJpg.textContent = textMap.formatJpg;
+  el.optionWebp.textContent = textMap.formatWebp;
   el.perSecondLabel.textContent = textMap.perSecondLabel;
   el.perSecondHint.textContent = textMap.perSecondHint;
   el.allFramesLabel.textContent = textMap.allFramesLabel;
@@ -116,6 +136,10 @@ function setStaticTexts() {
   el.convertBtn.textContent = textMap.convertStart;
   el.downloadBtn.textContent = textMap.downloadResult;
   el.clearBtn.textContent = textMap.clearLog;
+  el.preset1.textContent = textMap.preset1;
+  el.preset5.textContent = textMap.preset5;
+  el.preset10.textContent = textMap.preset10;
+  el.preset24.textContent = textMap.preset24;
 }
 
 function log(message) {

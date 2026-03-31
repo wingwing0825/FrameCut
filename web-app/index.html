@@ -3,47 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>影格轉圖片</title>
+  <title>FrameCut</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
   <main class="app-shell">
     <header class="hero">
       <div class="hero-badge">FrameCut Web</div>
-      <h1 id="title">影片影格轉圖片</h1>
-      <p id="subtitle">適用於 Live2D 動作參考</p>
+      <h1 id="title">FrameCut</h1>
+      <p id="subtitle">Video frame extractor</p>
     </header>
 
     <section class="card">
-      <h2 id="step1Title">步驟 1：選擇影片</h2>
+      <h2 id="step1Title">Step 1</h2>
       <div class="file-top-row">
-        <label class="choose-btn" for="videoInput">選擇影片</label>
+        <label id="chooseVideoBtn" class="choose-btn" for="videoInput">Choose video</label>
         <span class="format-tag">mp4 / mov / mkv / avi / webm / flv / wmv</span>
       </div>
 
       <input id="videoInput" class="hidden-input" type="file" accept="video/*" />
 
       <label id="dropZone" class="drop-zone" for="videoInput">
-        <span id="dropZoneText">把影片拖曳到這裡，或點擊選擇影片</span>
+        <span id="dropZoneText">Drop video here or click to choose</span>
       </label>
-      <p id="videoMeta" class="meta">尚未選擇影片</p>
+      <p id="videoMeta" class="meta">No video selected.</p>
     </section>
 
     <section class="card">
-      <h2 id="step2Title">步驟 2：輸出設定</h2>
+      <h2 id="step2Title">Step 2</h2>
 
       <div class="grid">
         <label>
-          <span id="formatLabel">圖片格式</span>
+          <span id="formatLabel">Image format</span>
           <select id="formatSelect">
-            <option value="png">PNG（無失真）</option>
-            <option value="jpg">JPG（較細）</option>
-            <option value="webp">WEBP（壓縮）</option>
+            <option id="optionPng" value="png">PNG</option>
+            <option id="optionJpg" value="jpg">JPG</option>
+            <option id="optionWebp" value="webp">WEBP</option>
           </select>
         </label>
 
         <label>
-          <span id="perSecondLabel">每秒輸出幾張</span>
+          <span id="perSecondLabel">Images per second</span>
           <input id="perSecondInput" type="number" min="1" max="60" step="1" value="1" />
         </label>
       </div>
@@ -51,51 +51,51 @@
       <div class="rate-box">
         <input id="perSecondSlider" type="range" min="1" max="60" step="1" value="1" />
         <div class="preset-row">
-          <button type="button" class="fps-preset" data-fps="1">1 張/秒</button>
-          <button type="button" class="fps-preset" data-fps="5">5 張/秒</button>
-          <button type="button" class="fps-preset" data-fps="10">10 張/秒</button>
-          <button type="button" class="fps-preset" data-fps="24">24 張/秒</button>
+          <button id="preset1" type="button" class="fps-preset" data-fps="1">1 / sec</button>
+          <button id="preset5" type="button" class="fps-preset" data-fps="5">5 / sec</button>
+          <button id="preset10" type="button" class="fps-preset" data-fps="10">10 / sec</button>
+          <button id="preset24" type="button" class="fps-preset" data-fps="24">24 / sec</button>
         </div>
       </div>
 
-      <p id="perSecondHint" class="hint">例子：1 = 每秒 1 張，10 = 每秒 10 張</p>
-      <p id="perSecondPreview" class="preview-pill">目前設定：每秒 1 張</p>
+      <p id="perSecondHint" class="hint">1 = 1 image/sec, 10 = 10 images/sec</p>
+      <p id="perSecondPreview" class="preview-pill">Current: 1 image/sec</p>
 
       <label class="inline-check">
         <input id="allFramesCheck" type="checkbox" />
-        <span id="allFramesLabel">每一偵都輸出（忽略「每秒幾張」）</span>
+        <span id="allFramesLabel">Export every frame</span>
       </label>
 
       <fieldset class="mode-box">
-        <legend id="outputModeTitle">輸出方式</legend>
+        <legend id="outputModeTitle">Output mode</legend>
 
         <label class="mode-item mode-item-strong">
           <input type="radio" name="outputMode" value="zip" checked />
-          <span id="zipModeLabel">下載 ZIP（所有瀏覽器可用）</span>
+          <span id="zipModeLabel">Download ZIP</span>
         </label>
 
         <label class="mode-item mode-item-strong">
           <input type="radio" name="outputMode" value="folder" />
-          <span id="folderModeLabel">直接寫入資料夾（Chrome / Edge）</span>
+          <span id="folderModeLabel">Write to folder (Chrome / Edge)</span>
         </label>
 
         <div class="folder-row">
-          <button id="pickFolderBtn" type="button" disabled>選擇輸出資料夾</button>
-          <span id="folderName">尚未選擇資料夾</span>
+          <button id="pickFolderBtn" type="button" disabled>Choose output folder</button>
+          <span id="folderName">No folder selected.</span>
         </div>
       </fieldset>
     </section>
 
     <section class="card">
-      <h2 id="step3Title">步驟 3：開始轉換</h2>
+      <h2 id="step3Title">Step 3</h2>
       <div class="actions">
-        <button id="convertBtn" type="button">開始轉換</button>
-        <button id="downloadBtn" type="button" disabled>下載結果</button>
-        <button id="clearBtn" type="button">清空紀錄</button>
+        <button id="convertBtn" type="button">Convert</button>
+        <button id="downloadBtn" type="button" disabled>Download</button>
+        <button id="clearBtn" type="button">Clear Log</button>
       </div>
 
       <progress id="progressBar" max="100" value="0"></progress>
-      <p id="statusText">就緒</p>
+      <p id="statusText">Ready</p>
       <textarea id="logBox" readonly></textarea>
     </section>
   </main>
