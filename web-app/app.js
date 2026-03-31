@@ -146,7 +146,10 @@ async function ensureFFmpeg() {
   log(textMap.statusInit);
 
   try {
-    const { FFmpeg } = await import("./vendor/ffmpeg/index.js");
+    const [{ FFmpeg }, { toBlobURL }] = await Promise.all([
+      import("./vendor/ffmpeg/index.js"),
+      import("./vendor/util/index.js"),
+    ]);
 
     const ffmpeg = new FFmpeg();
     ffmpeg.on("log", ({ message }) => {
@@ -158,10 +161,10 @@ async function ensureFFmpeg() {
       }
     });
 
-    const coreBase = new URL("./vendor/core/", window.location.href);
+    const coreBase = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm";
     await ffmpeg.load({
-      coreURL: new URL("ffmpeg-core.js", coreBase).toString(),
-      wasmURL: new URL("ffmpeg-core.wasm", coreBase).toString(),
+      coreURL: await toBlobURL(`${coreBase}/ffmpeg-core.js`, "text/javascript"),
+      wasmURL: await toBlobURL(`${coreBase}/ffmpeg-core.wasm`, "application/wasm"),
     });
 
     state.ffmpeg = ffmpeg;
