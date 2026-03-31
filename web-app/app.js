@@ -1,4 +1,4 @@
-const textMap = {
+﻿const textMap = {
   appTitle: "\u5f71\u7247\u5f71\u683c\u8f49\u5716\u7247",
   appSubtitle: "\u9069\u7528\u65bc Live2D \u52d5\u4f5c\u53c3\u8003",
   step1: "\u6b65\u9a5f 1\uff1a\u9078\u64c7\u5f71\u7247",
@@ -15,15 +15,10 @@ const textMap = {
   allFramesLabel: "\u6bcf\u4e00\u5075\u90fd\u8f38\u51fa\uff08\u5ffd\u7565\u300c\u6bcf\u79d2\u5e7e\u5f35\u300d\uff09",
   outputModeTitle: "\u8f38\u51fa\u65b9\u5f0f",
   zipModeLabel: "\u4e0b\u8f09 ZIP\uff08\u6240\u6709\u700f\u89bd\u5668\u53ef\u7528\uff09",
-  eagleModeLabel: "\u532f\u5165 Eagle App\uff08\u53ef\u9078\u5206\u985e\uff09",
-  eagleModeLocalOnlyLabel:
-    "\u532f\u5165 Eagle App\uff08\u50c5\u9650\u672c\u6a5f http://127.0.0.1:5173\uff09",
   folderModeLabel: "\u76f4\u63a5\u5beb\u5165\u8cc7\u6599\u593e\uff08Chrome / Edge\uff09",
   chooseFolderBtn: "\u9078\u64c7\u8f38\u51fa\u8cc7\u6599\u593e",
   folderNotPicked: "\u5c1a\u672a\u9078\u64c7\u8cc7\u6599\u593e",
   folderPickedPrefix: "\u5df2\u9078\u64c7\u8cc7\u6599\u593e\uff1a",
-  loadEagleFoldersBtn: "\u8f09\u5165 Eagle \u5206\u985e",
-  eagleRootOption: "\u6839\u76ee\u9304\uff08\u4e0d\u5206\u985e\uff09",
   statusReady: "\u5c31\u7dd2",
   statusInit: "\u8f09\u5165 ffmpeg.wasm \u4e2d...",
   statusConverting: "\u8f49\u63db\u4e2d\uff0c\u8acb\u7a0d\u5019...",
@@ -35,15 +30,6 @@ const textMap = {
   clearedLog: "\u5df2\u6e05\u7a7a\u7d00\u9304\u3002",
   folderModeUnsupported:
     "\u4f60\u7684\u700f\u89bd\u5668\u4e0d\u652f\u63f4\u9078\u8cc7\u6599\u593e\u5beb\u5165\uff0c\u8acb\u6539\u7528 Chrome \u6216 Edge\uff0c\u6216\u9078 ZIP \u4e0b\u8f09\u3002",
-  eagleRemoteUnsupported:
-    "Eagle \u532f\u5165\u6a21\u5f0f\u53ea\u80fd\u5728\u672c\u6a5f\u7248\u4f7f\u7528\uff08http://127.0.0.1:5173\uff09\uff0cworkers.dev \u7121\u6cd5\u9023\u5230\u4f60\u96fb\u8166\u7684 Eagle API\u3002",
-  eagleNotRunning:
-    "\u5075\u6e2c\u4e0d\u5230 Eagle App\uff0c\u8acb\u5148\u958b\u555f Eagle\uff08\u684c\u9762\u7248\uff09\u518d\u8a66\u3002\u5982\u679c\u4f60\u4fc2\u7528\u96f2\u7aef\u7db2\u5740\uff0c\u8acb\u6539\u7528\u672c\u6a5f http://127.0.0.1:5173\u3002",
-  eagleFoldersLoadedPrefix: "Eagle \u5206\u985e\u5df2\u8f09\u5165\uff0c\u5171 ",
-  eagleFoldersLoadedSuffix: " \u500b\u5206\u985e\u3002",
-  eagleImportDonePrefix: "\u5df2\u532f\u5165 Eagle\uff0c\u5171 ",
-  eagleImportDoneSuffix: " \u5f35\u3002",
-  eagleImportProgressPrefix: "Eagle \u532f\u5165\u4e2d\uff1a",
   chooseFolderFirst: "\u8acb\u5148\u9078\u64c7\u8f38\u51fa\u8cc7\u6599\u593e\u3002",
   chooseVideoFirst: "\u8acb\u5148\u9078\u64c7\u5f71\u7247\u3002",
   loadingLibFail: "\u8f09\u5165 ffmpeg.wasm \u5931\u6557\uff0c\u8acb\u6aa2\u67e5\u7db2\u8def\u5f8c\u518d\u8a66\u3002",
@@ -85,12 +71,7 @@ const el = {
   allFramesLabel: byId("allFramesLabel"),
   outputModeTitle: byId("outputModeTitle"),
   zipModeLabel: byId("zipModeLabel"),
-  eagleModeLabel: byId("eagleModeLabel"),
-  eagleModeRadio: document.querySelector('input[name="outputMode"][value="eagle"]'),
   folderModeLabel: byId("folderModeLabel"),
-  eaglePanel: byId("eaglePanel"),
-  loadEagleFoldersBtn: byId("loadEagleFoldersBtn"),
-  eagleFolderSelect: byId("eagleFolderSelect"),
   pickFolderBtn: byId("pickFolderBtn"),
   folderName: byId("folderName"),
   videoInput: byId("videoInput"),
@@ -141,16 +122,7 @@ function setStaticTexts() {
   el.allFramesLabel.textContent = textMap.allFramesLabel;
   el.outputModeTitle.textContent = textMap.outputModeTitle;
   el.zipModeLabel.textContent = textMap.zipModeLabel;
-  el.eagleModeLabel.textContent = canUseEagleMode()
-    ? textMap.eagleModeLabel
-    : textMap.eagleModeLocalOnlyLabel;
   el.folderModeLabel.textContent = textMap.folderModeLabel;
-  el.loadEagleFoldersBtn.textContent = textMap.loadEagleFoldersBtn;
-  el.eagleFolderSelect.innerHTML = "";
-  const rootOption = document.createElement("option");
-  rootOption.value = "";
-  rootOption.textContent = textMap.eagleRootOption;
-  el.eagleFolderSelect.appendChild(rootOption);
   el.pickFolderBtn.textContent = textMap.chooseFolderBtn;
   el.folderName.textContent = textMap.folderNotPicked;
   el.statusText.textContent = textMap.statusReady;
@@ -186,17 +158,6 @@ function supportsFolderPicker() {
   return typeof window.showDirectoryPicker === "function";
 }
 
-const EAGLE_API_BASE = "http://localhost:41595/api";
-
-function isLocalWebAppOrigin() {
-  const host = window.location.hostname;
-  return host === "localhost" || host === "127.0.0.1" || host === "::1" || host === "[::1]";
-}
-
-function canUseEagleMode() {
-  return isLocalWebAppOrigin();
-}
-
 function getOutputMode() {
   const checked = document.querySelector('input[name="outputMode"]:checked');
   return checked ? checked.value : "zip";
@@ -225,26 +186,17 @@ function syncPerSecondControls(nextValue) {
 
 function updateRateInputEnabled() {
   const disabled = state.converting || el.allFramesCheck.checked;
-
   el.perSecondInput.disabled = disabled;
   el.perSecondSlider.disabled = disabled;
+
   for (const btn of el.presetButtons) {
     btn.disabled = disabled;
   }
 }
 
 function updateOutputModeUi() {
-  const eagleAvailable = canUseEagleMode();
-  if (el.eagleModeRadio) {
-    el.eagleModeRadio.disabled = state.converting || !eagleAvailable;
-  }
   el.pickFolderBtn.disabled =
     state.converting || state.outputMode !== "folder" || !supportsFolderPicker();
-  el.eaglePanel.style.display = eagleAvailable && state.outputMode === "eagle" ? "flex" : "none";
-  el.loadEagleFoldersBtn.disabled =
-    state.converting || state.outputMode !== "eagle" || !eagleAvailable;
-  el.eagleFolderSelect.disabled =
-    state.converting || state.outputMode !== "eagle" || !eagleAvailable;
 }
 
 function setBusy(busy) {
@@ -351,13 +303,12 @@ function getSafeBaseName(fileName) {
 
 async function collectFrameFiles(formatExt) {
   const entries = await state.ffmpeg.listDir("/frames");
-  const files = entries
+  return entries
     .filter((it) => !it.isDir && it.name.toLowerCase().endsWith(`.${formatExt}`))
     .sort((a, b) => a.name.localeCompare(b.name));
-  return files;
 }
 
-async function saveToZip(frameFiles, zipName, showReadyLog = true) {
+async function saveToZip(frameFiles, zipName) {
   const { default: JSZip } = await import("https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm");
   const zip = new JSZip();
 
@@ -369,136 +320,7 @@ async function saveToZip(frameFiles, zipName, showReadyLog = true) {
   state.zipBlob = await zip.generateAsync({ type: "blob" });
   state.zipName = zipName;
   el.downloadBtn.disabled = false;
-  if (showReadyLog) {
-    log(textMap.zipReady);
-  }
-}
-
-async function eagleRequest(path, options = {}) {
-  let response;
-  try {
-    response = await fetch(`${EAGLE_API_BASE}${path}`, options);
-  } catch (err) {
-    if (!canUseEagleMode()) {
-      throw new Error(textMap.eagleRemoteUnsupported);
-    }
-    throw new Error(err?.message || String(err));
-  }
-
-  if (!response.ok) {
-    throw new Error(`Eagle API HTTP ${response.status}`);
-  }
-
-  let body;
-  try {
-    body = await response.json();
-  } catch (_err) {
-    throw new Error("Eagle API response parse failed.");
-  }
-
-  if (body?.status && body.status !== "success") {
-    throw new Error(body.message || "Eagle API returned error.");
-  }
-  return body;
-}
-
-async function ensureEagleRunning() {
-  if (!canUseEagleMode()) {
-    throw new Error(textMap.eagleRemoteUnsupported);
-  }
-  try {
-    await eagleRequest("/application/info", { method: "GET" });
-  } catch (err) {
-    throw new Error(`${textMap.eagleNotRunning} ${err?.message || err}`);
-  }
-}
-
-function flattenEagleFolders(nodes, output, parentPath = "") {
-  for (const node of nodes || []) {
-    const displayName = parentPath ? `${parentPath} / ${node.name}` : node.name;
-    output.push({ id: node.id, name: displayName });
-    flattenEagleFolders(node.children || [], output, displayName);
-  }
-}
-
-async function loadEagleFolders() {
-  el.loadEagleFoldersBtn.disabled = true;
-  try {
-    await ensureEagleRunning();
-    const info = await eagleRequest("/library/info", { method: "GET" });
-    const flattened = [];
-    flattenEagleFolders(info?.data?.folders || [], flattened);
-
-    el.eagleFolderSelect.innerHTML = "";
-    const rootOption = document.createElement("option");
-    rootOption.value = "";
-    rootOption.textContent = textMap.eagleRootOption;
-    el.eagleFolderSelect.appendChild(rootOption);
-
-    for (const folder of flattened) {
-      const option = document.createElement("option");
-      option.value = folder.id;
-      option.textContent = folder.name;
-      el.eagleFolderSelect.appendChild(option);
-    }
-    log(
-      `${textMap.eagleFoldersLoadedPrefix}${flattened.length}${textMap.eagleFoldersLoadedSuffix}`,
-    );
-  } catch (err) {
-    const msg = err?.message || String(err);
-    logError(msg);
-    alert(msg);
-  } finally {
-    el.loadEagleFoldersBtn.disabled = state.converting;
-  }
-}
-
-function mimeFromFormat(formatExt) {
-  if (formatExt === "jpg") return "image/jpeg";
-  if (formatExt === "webp") return "image/webp";
-  return "image/png";
-}
-
-function uint8ToBase64(uint8) {
-  const chunk = 0x8000;
-  let binary = "";
-  for (let i = 0; i < uint8.length; i += chunk) {
-    binary += String.fromCharCode(...uint8.subarray(i, i + chunk));
-  }
-  return btoa(binary);
-}
-
-async function importToEagle(frameFiles, formatExt, videoBaseName) {
-  await ensureEagleRunning();
-  const folderId = el.eagleFolderSelect.value || "";
-  const mime = mimeFromFormat(formatExt);
-
-  let index = 0;
-  for (const file of frameFiles) {
-    index += 1;
-    const bytes = await state.ffmpeg.readFile(`/frames/${file.name}`);
-    const base64 = uint8ToBase64(bytes);
-    const payload = {
-      url: `data:${mime};base64,${base64}`,
-      name: file.name,
-      tags: [videoBaseName, "FrameCut"],
-    };
-    if (folderId) {
-      payload.folderId = folderId;
-    }
-
-    await eagleRequest("/item/addFromURL", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    if (index % 10 === 0 || index === frameFiles.length) {
-      log(`${textMap.eagleImportProgressPrefix} ${index}/${frameFiles.length}`);
-    }
-  }
-
-  log(`${textMap.eagleImportDonePrefix}${frameFiles.length}${textMap.eagleImportDoneSuffix}`);
+  log(textMap.zipReady);
 }
 
 async function getUniqueSubFolder(parent, baseName) {
@@ -547,10 +369,6 @@ async function convertVideo() {
     alert(textMap.chooseFolderFirst);
     return;
   }
-  if (state.outputMode === "eagle" && !canUseEagleMode()) {
-    alert(textMap.eagleRemoteUnsupported);
-    return;
-  }
 
   setBusy(true);
   setProgress(0);
@@ -594,11 +412,8 @@ async function convertVideo() {
     const baseName = getSafeBaseName(state.selectedVideo.name);
     if (state.outputMode === "folder") {
       await saveToFolder(frameFiles, `${baseName}_frames`);
-    } else if (state.outputMode === "eagle") {
-      await importToEagle(frameFiles, formatExt, baseName);
     } else {
-      const zipName = `${baseName}_frames.zip`;
-      await saveToZip(frameFiles, zipName, true);
+      await saveToZip(frameFiles, `${baseName}_frames.zip`);
     }
 
     setProgress(100);
@@ -619,6 +434,7 @@ async function pickOutputFolder() {
     alert(textMap.folderModeUnsupported);
     return;
   }
+
   try {
     const handle = await window.showDirectoryPicker({ mode: "readwrite" });
     state.directoryHandle = handle;
@@ -630,6 +446,7 @@ async function pickOutputFolder() {
 
 function downloadZip() {
   if (!state.zipBlob) return;
+
   const name = state.zipName || "frames.zip";
   const url = URL.createObjectURL(state.zipBlob);
   const a = document.createElement("a");
@@ -679,11 +496,6 @@ function bindEvents() {
   document.querySelectorAll('input[name="outputMode"]').forEach((radio) => {
     radio.addEventListener("change", () => {
       state.outputMode = getOutputMode();
-      if (state.outputMode === "eagle" && !canUseEagleMode()) {
-        alert(textMap.eagleRemoteUnsupported);
-        document.querySelector('input[name="outputMode"][value="zip"]').checked = true;
-        state.outputMode = "zip";
-      }
       if (state.outputMode === "folder" && !supportsFolderPicker()) {
         alert(textMap.folderModeUnsupported);
         document.querySelector('input[name="outputMode"][value="zip"]').checked = true;
@@ -694,7 +506,6 @@ function bindEvents() {
   });
 
   el.pickFolderBtn.addEventListener("click", pickOutputFolder);
-  el.loadEagleFoldersBtn.addEventListener("click", loadEagleFolders);
   el.convertBtn.addEventListener("click", convertVideo);
   el.downloadBtn.addEventListener("click", downloadZip);
   el.clearBtn.addEventListener("click", () => {
@@ -711,9 +522,6 @@ function init() {
 
   state.outputMode = getOutputMode();
   updateOutputModeUi();
-  if (!canUseEagleMode()) {
-    log(textMap.eagleRemoteUnsupported);
-  }
   if (!supportsFolderPicker()) {
     log(textMap.folderModeUnsupported);
   }
