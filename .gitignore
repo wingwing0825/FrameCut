@@ -1,0 +1,17 @@
+# Local binaries
+ffmpeg.exe
+ffplay.exe
+ffprobe.exe
+ffmpeg/
+
+# Generated frame outputs
+*_frames/
+_*/
+PixVerse_V6_Image_Text_720P_A_cute_kitten_sits_frames/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+

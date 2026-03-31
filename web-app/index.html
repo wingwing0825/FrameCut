@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>影片影格轉圖片 Web App</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero">
+      <h1 id="title">影片影格轉圖片</h1>
+      <p id="subtitle">適用於 Live2D 動作參考</p>
+    </header>
+
+    <section class="card">
+      <h2 id="step1Title">步驟 1：選擇影片</h2>
+      <div class="file-row">
+        <input id="videoInput" type="file" accept="video/*" />
+      </div>
+      <label id="dropZone" class="drop-zone" for="videoInput">
+        <span id="dropZoneText">把影片拖曳到這裡，或點擊選擇影片</span>
+      </label>
+      <p id="videoMeta" class="meta">尚未選擇影片</p>
+    </section>
+
+    <section class="card">
+      <h2 id="step2Title">步驟 2：輸出設定</h2>
+      <div class="grid">
+        <label>
+          <span id="formatLabel">圖片格式</span>
+          <select id="formatSelect">
+            <option value="png">PNG（無失真）</option>
+            <option value="jpg">JPG（檔案較小）</option>
+            <option value="webp">WEBP（壓縮佳）</option>
+          </select>
+        </label>
+        <label>
+          <span id="everyNLabel">每 N 偵輸出 1 張</span>
+          <input id="everyNInput" type="number" min="1" step="1" value="1" />
+        </label>
+      </div>
+
+      <fieldset class="mode-box">
+        <legend id="outputModeTitle">輸出方式</legend>
+        <label class="mode-item">
+          <input type="radio" name="outputMode" value="zip" checked />
+          <span id="zipModeLabel">下載 ZIP（所有瀏覽器可用）</span>
+        </label>
+        <label class="mode-item">
+          <input type="radio" name="outputMode" value="folder" />
+          <span id="folderModeLabel">直接寫入資料夾（Chrome / Edge）</span>
+        </label>
+        <div class="folder-row">
+          <button id="pickFolderBtn" type="button" disabled>選擇輸出資料夾</button>
+          <span id="folderName">尚未選擇資料夾</span>
+        </div>
+      </fieldset>
+    </section>
+
+    <section class="card">
+      <h2 id="step3Title">步驟 3：開始轉換</h2>
+      <div class="actions">
+        <button id="convertBtn" type="button">開始轉換</button>
+        <button id="downloadBtn" type="button" disabled>下載結果</button>
+        <button id="clearBtn" type="button">清空紀錄</button>
+      </div>
+      <progress id="progressBar" max="100" value="0"></progress>
+      <p id="statusText">就緒</p>
+      <textarea id="logBox" readonly></textarea>
+    </section>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

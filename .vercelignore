@@ -1,0 +1,17 @@
+# Local desktop app binaries and scripts (not needed for web deployment)
+ffmpeg.exe
+ffplay.exe
+ffprobe.exe
+ffmpeg/
+video-frame-app.ps1
+extract-frames.ps1
+run-video-frame-app.bat
+run-web-app.bat
+
+# Local generated outputs
+*_frames/
+_*/
+PixVerse_V6_Image_Text_720P_A_cute_kitten_sits_frames/
+
+# Local docs/artifacts
+video-frame-extractor.md

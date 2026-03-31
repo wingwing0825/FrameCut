@@ -1,0 +1,35 @@
+{
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/web-app/index.html"
+    },
+    {
+      "source": "/app.js",
+      "destination": "/web-app/app.js"
+    },
+    {
+      "source": "/styles.css",
+      "destination": "/web-app/styles.css"
+    },
+    {
+      "source": "/assets/(.*)",
+      "destination": "/web-app/assets/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Cross-Origin-Embedder-Policy",
+          "value": "require-corp"
+        }
+      ]
+    }
+  ]
+}
