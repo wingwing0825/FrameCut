@@ -23,10 +23,11 @@ run-video-frame-app.bat
 1. Pick a video file
 2. Choose image format (PNG/JPG/WEBP)
 3. Set `Every N frames`
-4. Choose output mode:
+4. Optional: enable `Import to Eagle App` (requires Eagle desktop app running)
+5. Choose output mode:
    - Auto create output folder in workspace
    - Custom parent folder
-5. Click `Start`
+6. Click `Start`
 
 ## ffmpeg requirements
 

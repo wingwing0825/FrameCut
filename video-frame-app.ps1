@@ -8,6 +8,8 @@ $PSNativeCommandUseErrorActionPreference = $false
 $script:scriptRoot = if ($PSScriptRoot) { $PSScriptRoot } else { (Get-Location).Path }
 $script:lastOutputFolder = ""
 $script:isRunning = $false
+$script:eagleApiBase = "http://localhost:41595/api/v2"
+$script:eagleFolderMap = @{}
 
 function Convert-UnicodeEscapes([string]$text) {
     return [System.Text.RegularExpressions.Regex]::Replace(
@@ -48,6 +50,12 @@ $rawText = [ordered]@{
     TooltipEveryN     = "\u8a2d\u5b9a\u70ba 1 \u4ee3\u8868\u6bcf\u4e00\u5075\u90fd\u8f38\u51fa\uff0c\u8a2d\u5b9a\u70ba 2 \u4ee3\u8868\u6bcf 2 \u5075\u8f38\u51fa 1 \u5f35\u3002"
     TooltipAuto       = "\u81ea\u52d5\u6a21\u5f0f\u6703\u5728\u672c\u5de5\u5177\u8cc7\u6599\u593e\u5efa\u7acb\u65b0\u8cc7\u6599\u593e\uff0c\u4e0d\u6703\u8986\u84cb\u820a\u5c08\u6848\u3002"
     TooltipCustom     = "\u81ea\u8a02\u6a21\u5f0f\u6703\u5728\u4f60\u9078\u7684\u7236\u8cc7\u6599\u593e\u5e95\u4e0b\u5efa\u7acb <\u5f71\u7247\u540d>_frames\u3002"
+    EagleImport       = "\u8f49\u63db\u5f8c\u532f\u5165 Eagle App\uff08\u672c\u6a5f\uff09"
+    EagleFolderLabel  = "Eagle \u5206\u985e"
+    LoadEagleFolders  = "\u8f09\u5165 Eagle \u5206\u985e"
+    EagleFolderRoot   = "\u6839\u76ee\u9304\uff08\u4e0d\u5206\u985e\uff09"
+    EagleFolderHint   = "\u4e0d\u8f09\u5165\u5206\u985e\u4e5f\u53ef\u7528\uff0c\u6703\u532f\u5165\u5230 Eagle \u6839\u76ee\u9304\u3002"
+    TooltipEagle      = "\u9700\u8981\u5148\u958b\u555f Eagle \u684c\u9762\u7248\uff0c\u8f49\u63db\u5b8c\u5f8c\u6703\u81ea\u52d5\u532f\u5165\u5716\u7247\u3002"
 
     GroupStep3        = "\u6b65\u9a5f 3\uff1a\u958b\u59cb\u8f49\u63db"
     Extract           = "\u958b\u59cb\u8f49\u63db"
@@ -61,6 +69,7 @@ $rawText = [ordered]@{
     StatusValidating  = "\u6aa2\u67e5\u8f38\u5165\u4e2d..."
     StatusExtracting  = "\u8f49\u63db\u4e2d..."
     StatusRunning     = "\u57f7\u884c\u4e2d\uff0c\u8acb\u7a0d\u5019..."
+    StatusImporting   = "\u532f\u5165 Eagle \u4e2d..."
     StatusDone        = "\u5b8c\u6210"
     StatusError       = "\u767c\u751f\u932f\u8aa4"
 
@@ -70,6 +79,7 @@ $rawText = [ordered]@{
     ErrEveryN         = "\u6bcf N \u5075\u5fc5\u9808\u5927\u65bc\u6216\u7b49\u65bc 1\u3002"
     ErrChooseCustom   = "\u8acb\u9078\u64c7\u81ea\u8a02\u8f38\u51fa\u7236\u8cc7\u6599\u593e\u3002"
     ErrCustomNotFound = "\u81ea\u8a02\u8f38\u51fa\u7236\u8cc7\u6599\u593e\u4e0d\u5b58\u5728\u3002"
+    ErrEagleNotRunning = "\u627e\u4e0d\u5230 Eagle API\uff08http://localhost:41595\uff09\u3002\u8acb\u5148\u958b\u555f Eagle \u684c\u9762\u7248\u3002"
     OpenOutputFirst   = "\u5c1a\u672a\u6709\u53ef\u958b\u555f\u7684\u8f38\u51fa\u8cc7\u6599\u593e\u3002"
 
     LogStartTime      = "\u958b\u59cb\u6642\u9593\uff1a"
@@ -84,6 +94,13 @@ $rawText = [ordered]@{
     LogRunFfmpeg      = "\u958b\u59cb\u57f7\u884c ffmpeg..."
     LogDonePrefix     = "\u8f49\u63db\u5b8c\u6210\uff0c\u7e3d\u5171\u8f38\u51fa "
     LogDoneSuffix     = " \u5f35\u5716\u7247\u3002"
+    LogEagleFolderLoadedPrefix = "Eagle \u5206\u985e\u5df2\u8f09\u5165\uff0c\u5171 "
+    LogEagleFolderLoadedSuffix = " \u500b\u3002"
+    LogEagleImportStart = "\u958b\u59cb\u532f\u5165 Eagle..."
+    LogEagleImportTarget = "Eagle \u5206\u985e\uff1a"
+    LogEagleImportProgressPrefix = "Eagle \u532f\u5165\u9032\u5ea6\uff1a"
+    LogEagleImportDonePrefix = "Eagle \u532f\u5165\u5b8c\u6210\uff0c\u6210\u529f "
+    LogEagleImportDoneSuffix = " \u5f35\u3002"
     ClearLogDone      = "\u5df2\u6e05\u7a7a\u7d00\u9304\u3002"
 
     MsgDoneTitle      = "\u8f49\u63db\u5b8c\u6210"
@@ -212,6 +229,7 @@ function Set-InputsEnabled([bool]$enabled) {
     $script:btnClearLog.Enabled = $enabled
     $script:btnOpenAppFolder.Enabled = $enabled
     $script:btnClose.Enabled = $enabled
+    $script:chkImportEagle.Enabled = $enabled
 
     if (-not $enabled) {
         $script:btnOpenOutput.Enabled = $false
@@ -220,6 +238,7 @@ function Set-InputsEnabled([bool]$enabled) {
     }
 
     Update-CustomFolderEnabled
+    Update-EagleControlsEnabled
 }
 
 function Set-RunningState([bool]$running, [string]$statusText) {
@@ -287,6 +306,130 @@ function Get-SelectedExtension {
         2 { return "webp" }
         default { return "png" }
     }
+}
+
+function Invoke-EagleApi([string]$method, [string]$path, $body = $null) {
+    $uri = $script:eagleApiBase + $path
+    $params = @{
+        Method      = $method
+        Uri         = $uri
+        ErrorAction = "Stop"
+    }
+
+    if ($null -ne $body) {
+        $params["ContentType"] = "application/json"
+        $params["Body"] = ($body | ConvertTo-Json -Depth 12 -Compress)
+    }
+
+    $response = Invoke-RestMethod @params
+    if ($null -eq $response) {
+        throw "Empty Eagle API response."
+    }
+    if ($response.status -ne "success") {
+        if (-not [string]::IsNullOrWhiteSpace([string]$response.message)) {
+            throw [string]$response.message
+        }
+        throw "Eagle API request failed."
+    }
+    return $response.data
+}
+
+function Test-EagleAvailable {
+    try {
+        [void](Invoke-EagleApi -method "GET" -path "/app/info")
+        return $true
+    }
+    catch {
+        return $false
+    }
+}
+
+function Add-EagleFolderNode($node, [string]$parentPath, [System.Collections.Generic.List[object]]$flatList) {
+    if ($null -eq $node) { return }
+    $name = [string]$node.name
+    if ([string]::IsNullOrWhiteSpace($name)) { return }
+
+    $display = if ([string]::IsNullOrWhiteSpace($parentPath)) { $name } else { "$parentPath / $name" }
+    $flatList.Add([pscustomobject]@{
+            Id      = [string]$node.id
+            Display = $display
+        }) | Out-Null
+
+    foreach ($child in @($node.children)) {
+        Add-EagleFolderNode -node $child -parentPath $display -flatList $flatList
+    }
+}
+
+function Get-EagleFoldersFlat {
+    $flat = New-Object 'System.Collections.Generic.List[object]'
+    $offset = 0
+    $limit = 200
+
+    while ($true) {
+        $data = Invoke-EagleApi -method "GET" -path ("/folder/get?offset=" + $offset + "&limit=" + $limit)
+        $rows = @($data.data)
+        foreach ($row in $rows) {
+            Add-EagleFolderNode -node $row -parentPath "" -flatList $flat
+        }
+
+        if ($rows.Count -lt $limit) {
+            break
+        }
+        $offset += $limit
+    }
+
+    return @($flat)
+}
+
+function Update-EagleControlsEnabled {
+    $enabled = (-not $script:isRunning) -and $script:chkImportEagle.Checked
+    $script:btnLoadEagleFolders.Enabled = $enabled
+    $script:cmbEagleFolder.Enabled = $enabled
+}
+
+function Get-SelectedEagleFolderId {
+    $selected = [string]$script:cmbEagleFolder.SelectedItem
+    if ([string]::IsNullOrWhiteSpace($selected)) {
+        return ""
+    }
+    if ($script:eagleFolderMap.ContainsKey($selected)) {
+        return [string]$script:eagleFolderMap[$selected]
+    }
+    return ""
+}
+
+function Import-FramesToEagle([System.IO.FileInfo[]]$frameFiles, [string]$videoName, [string]$folderId) {
+    $total = @($frameFiles).Count
+    if ($total -eq 0) {
+        return 0
+    }
+
+    $imported = 0
+    $batchSize = 200
+
+    for ($offset = 0; $offset -lt $total; $offset += $batchSize) {
+        $end = [Math]::Min($offset + $batchSize - 1, $total - 1)
+        $batch = @($frameFiles[$offset..$end])
+        $items = @()
+
+        foreach ($file in $batch) {
+            $payload = [ordered]@{
+                path = $file.FullName
+                name = [System.IO.Path]::GetFileNameWithoutExtension($file.Name)
+                tags = @("FrameCut", $videoName)
+            }
+            if (-not [string]::IsNullOrWhiteSpace($folderId)) {
+                $payload["folders"] = @($folderId)
+            }
+            $items += [pscustomobject]$payload
+        }
+
+        [void](Invoke-EagleApi -method "POST" -path "/item/add" -body @{ items = $items })
+        $imported += $batch.Count
+        Append-Log -line ($script:T.LogEagleImportProgressPrefix + " " + $imported + "/" + $total)
+    }
+
+    return $imported
 }
 
 $form = New-Object System.Windows.Forms.Form
@@ -482,7 +625,7 @@ $script:txtOutputPreview = $txtOutputPreview
 $groupStep3 = New-Object System.Windows.Forms.GroupBox
 $groupStep3.Text = $script:T.GroupStep3
 $groupStep3.Location = New-Object System.Drawing.Point(20, 498)
-$groupStep3.Size = New-Object System.Drawing.Size(930, 108)
+$groupStep3.Size = New-Object System.Drawing.Size(930, 136)
 $form.Controls.Add($groupStep3)
 
 $btnExtract = New-Object System.Windows.Forms.Button
@@ -525,8 +668,34 @@ $btnClose.Size = New-Object System.Drawing.Size(200, 36)
 $groupStep3.Controls.Add($btnClose)
 $script:btnClose = $btnClose
 
+$chkImportEagle = New-Object System.Windows.Forms.CheckBox
+$chkImportEagle.Text = $script:T.EagleImport
+$chkImportEagle.Location = New-Object System.Drawing.Point(20, 70)
+$chkImportEagle.Size = New-Object System.Drawing.Size(220, 24)
+$groupStep3.Controls.Add($chkImportEagle)
+$script:chkImportEagle = $chkImportEagle
+
+$btnLoadEagleFolders = New-Object System.Windows.Forms.Button
+$btnLoadEagleFolders.Text = $script:T.LoadEagleFolders
+$btnLoadEagleFolders.Location = New-Object System.Drawing.Point(248, 66)
+$btnLoadEagleFolders.Size = New-Object System.Drawing.Size(140, 31)
+$btnLoadEagleFolders.Enabled = $false
+$groupStep3.Controls.Add($btnLoadEagleFolders)
+$script:btnLoadEagleFolders = $btnLoadEagleFolders
+
+$cmbEagleFolder = New-Object System.Windows.Forms.ComboBox
+$cmbEagleFolder.Location = New-Object System.Drawing.Point(396, 67)
+$cmbEagleFolder.Size = New-Object System.Drawing.Size(514, 30)
+$cmbEagleFolder.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
+$cmbEagleFolder.Enabled = $false
+[void]$cmbEagleFolder.Items.Add($script:T.EagleFolderRoot)
+$cmbEagleFolder.SelectedIndex = 0
+$groupStep3.Controls.Add($cmbEagleFolder)
+$script:cmbEagleFolder = $cmbEagleFolder
+$script:eagleFolderMap = @{ ($script:T.EagleFolderRoot) = "" }
+
 $progressBar = New-Object System.Windows.Forms.ProgressBar
-$progressBar.Location = New-Object System.Drawing.Point(20, 74)
+$progressBar.Location = New-Object System.Drawing.Point(20, 106)
 $progressBar.Size = New-Object System.Drawing.Size(520, 18)
 $progressBar.Style = [System.Windows.Forms.ProgressBarStyle]::Blocks
 $progressBar.Maximum = 100
@@ -535,7 +704,7 @@ $script:progressBar = $progressBar
 
 $statusLabel = New-Object System.Windows.Forms.Label
 $statusLabel.Text = $script:T.StatusReady
-$statusLabel.Location = New-Object System.Drawing.Point(552, 72)
+$statusLabel.Location = New-Object System.Drawing.Point(552, 104)
 $statusLabel.Size = New-Object System.Drawing.Size(358, 22)
 $statusLabel.TextAlign = [System.Drawing.ContentAlignment]::MiddleRight
 $groupStep3.Controls.Add($statusLabel)
@@ -543,7 +712,7 @@ $script:statusLabel = $statusLabel
 
 $groupLog = New-Object System.Windows.Forms.GroupBox
 $groupLog.Text = $script:T.GroupLog
-$groupLog.Location = New-Object System.Drawing.Point(20, 614)
+$groupLog.Location = New-Object System.Drawing.Point(20, 642)
 $groupLog.Size = New-Object System.Drawing.Size(930, 136)
 $form.Controls.Add($groupLog)
 
@@ -565,6 +734,8 @@ $tooltip.SetToolTip($numEveryN, $script:T.TooltipEveryN)
 $tooltip.SetToolTip($rbAuto, $script:T.TooltipAuto)
 $tooltip.SetToolTip($rbCustom, $script:T.TooltipCustom)
 $tooltip.SetToolTip($txtOutputPreview, $script:T.OutputPreviewTip)
+$tooltip.SetToolTip($chkImportEagle, $script:T.TooltipEagle)
+$tooltip.SetToolTip($cmbEagleFolder, $script:T.EagleFolderHint)
 
 $btnBrowseVideo.Add_Click({
     $dialog = New-Object System.Windows.Forms.OpenFileDialog
@@ -619,6 +790,50 @@ $btnBrowseFolder.Add_Click({
     $folderDialog.Description = $script:T.OpenFolderDesc
     if ($folderDialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) {
         $script:txtCustomFolder.Text = $folderDialog.SelectedPath
+    }
+})
+
+$chkImportEagle.Add_CheckedChanged({
+    Update-EagleControlsEnabled
+})
+
+$btnLoadEagleFolders.Add_Click({
+    if ($script:isRunning) {
+        return
+    }
+
+    try {
+        if (-not (Test-EagleAvailable)) {
+            throw $script:T.ErrEagleNotRunning
+        }
+
+        $folders = Get-EagleFoldersFlat
+        $script:cmbEagleFolder.Items.Clear()
+        $script:eagleFolderMap = @{}
+
+        [void]$script:cmbEagleFolder.Items.Add($script:T.EagleFolderRoot)
+        $script:eagleFolderMap[$script:T.EagleFolderRoot] = ""
+
+        foreach ($folder in ($folders | Sort-Object -Property Display)) {
+            $label = [string]$folder.Display
+            if ($script:eagleFolderMap.ContainsKey($label)) {
+                $label = $label + " [" + [string]$folder.Id + "]"
+            }
+            [void]$script:cmbEagleFolder.Items.Add($label)
+            $script:eagleFolderMap[$label] = [string]$folder.Id
+        }
+
+        $script:cmbEagleFolder.SelectedIndex = 0
+        Append-Log -line ($script:T.LogEagleFolderLoadedPrefix + ($script:cmbEagleFolder.Items.Count - 1) + $script:T.LogEagleFolderLoadedSuffix)
+    }
+    catch {
+        Append-Log -line ("[ERROR] " + $_.Exception.Message)
+        [System.Windows.Forms.MessageBox]::Show(
+            $_.Exception.Message,
+            $script:T.MsgErrorTitle,
+            [System.Windows.Forms.MessageBoxButtons]::OK,
+            [System.Windows.Forms.MessageBoxIcon]::Error
+        ) | Out-Null
     }
 })
 
@@ -678,6 +893,19 @@ $btnExtract.Add_Click({
         $everyN = [int]$script:numEveryN.Value
         if ($everyN -lt 1) {
             throw $script:T.ErrEveryN
+        }
+
+        $importToEagle = $script:chkImportEagle.Checked
+        $eagleFolderId = ""
+        $eagleFolderName = $script:T.EagleFolderRoot
+        if ($importToEagle) {
+            if (-not (Test-EagleAvailable)) {
+                throw $script:T.ErrEagleNotRunning
+            }
+            $eagleFolderId = Get-SelectedEagleFolderId
+            if ($script:cmbEagleFolder.SelectedItem) {
+                $eagleFolderName = [string]$script:cmbEagleFolder.SelectedItem
+            }
         }
 
         $targetFolder = Resolve-TargetOutputFolder `
@@ -761,7 +989,19 @@ $btnExtract.Add_Click({
             throw ("ffmpeg exited with code " + $ffmpegExitCode + [Environment]::NewLine + [Environment]::NewLine + $tailText + $hint)
         }
 
-        $count = (Get-ChildItem -LiteralPath $targetFolder -File -Filter "*.$extension" -ErrorAction SilentlyContinue | Measure-Object).Count
+        $frameFiles = @(Get-ChildItem -LiteralPath $targetFolder -File -Filter "*.$extension" -ErrorAction SilentlyContinue | Sort-Object Name)
+        $count = $frameFiles.Count
+
+        if ($importToEagle) {
+            $script:statusLabel.Text = $script:T.StatusImporting
+            [System.Windows.Forms.Application]::DoEvents() | Out-Null
+
+            Append-Log -line ($script:T.LogEagleImportTarget + $eagleFolderName)
+            Append-Log -line $script:T.LogEagleImportStart
+
+            $imported = Import-FramesToEagle -frameFiles $frameFiles -videoName (Get-VideoName -videoPath $videoPath) -folderId $eagleFolderId
+            Append-Log -line ($script:T.LogEagleImportDonePrefix + $imported + $script:T.LogEagleImportDoneSuffix)
+        }
 
         $script:lastOutputFolder = $targetFolder
         $script:btnOpenOutput.Enabled = $true
