@@ -20,7 +20,7 @@ function Convert-UnicodeEscapes([string]$text) {
 }
 
 $rawText = [ordered]@{
-    AppTitle          = "\u5f71\u7247\u5f71\u683c\u8f49\u5716\u7247\u5de5\u5177"
+    AppTitle          = "FrameCut"
     Subtitle          = "\u9069\u7528\u65bc Live2D \u52d5\u4f5c\u53c3\u8003"
     GroupStep1        = "\u6b65\u9a5f 1\uff1a\u9078\u64c7\u5f71\u7247"
     VideoPathLabel    = "\u5f71\u7247\u6a94\u6848"
@@ -1050,3 +1050,4 @@ if (-not (Test-FfmpegAvailable)) {
 }
 
 [void]$form.ShowDialog()
+

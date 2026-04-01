@@ -1,5 +1,5 @@
-﻿const textMap = {
-  appTitle: "\u5f71\u7247\u5f71\u683c\u8f49\u5716\u7247",
+const textMap = {
+  appTitle: "FrameCut",
   appSubtitle: "\u9069\u7528\u65bc Live2D \u52d5\u4f5c\u53c3\u8003",
   step1: "\u6b65\u9a5f 1\uff1a\u9078\u64c7\u5f71\u7247",
   step2: "\u6b65\u9a5f 2\uff1a\u8f38\u51fa\u8a2d\u5b9a",
@@ -528,3 +528,4 @@ function init() {
 }
 
 init();
+
